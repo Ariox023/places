@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -63,9 +65,9 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FloatingActionButton(
+                ElevatedButton(
+                  style: ButtonStyle(),
                   onPressed: _decrementCounter,
-                  tooltip: 'Decrement',
                   child: const Icon(Icons.remove),
                 ),
                 FloatingActionButton(
