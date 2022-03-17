@@ -1,4 +1,6 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers, must_be_immutable, avoid_print, unused_import
+
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
@@ -16,7 +18,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MySecondWidget(),
     );
   }
 }
@@ -79,6 +82,44 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class MyFirstWidget extends StatelessWidget {
+  MyFirstWidget({Key? key}) : super(key: key);
+  int counter = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    // при горячем рестарте значение счетчика сбрасывается. Потому что у StatelessWidget нет состояния(каждый раз стоится заново.).
+    counter++;
+    print(counter);
+    return Container(
+      child: Center(
+        child: Text('Hello'),
+      ),
+    );
+  }
+}
+
+class MySecondWidget extends StatefulWidget {
+  const MySecondWidget({Key? key}) : super(key: key);
+  @override
+  State<MySecondWidget> createState() => _MySecondWidget();
+}
+
+class _MySecondWidget extends State<MySecondWidget> {
+  // при горячем рестарте сохраняется предыдущее значение счетчика. Потому что у StatefulWidgetа есть состояние.
+  int counter = 0;
+  @override
+  Widget build(BuildContext context) {
+    counter++;
+    print(counter);
+    return Container(
+      child: Center(
+        child: Text('Hello $counter'),
       ),
     );
   }
