@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
+  // ignore: member-ordering-extended
   final String title;
 
   @override
@@ -48,6 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  // ignore: member-ordering-extended
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,6 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class MyFirstWidget extends StatelessWidget {
   MyFirstWidget({Key? key}) : super(key: key);
+  // ignore: member-ordering-extended
   int counter = 0;
   // Задание 4. Пункт 5. В StatelessWidget нет контекста поэтому будет выходить ошибка.
   // String testFunction() {
@@ -100,6 +103,7 @@ class MyFirstWidget extends StatelessWidget {
     // при горячем рестарте значение счетчика сбрасывается. Потому что у StatelessWidget нет состояния(каждый раз стоится заново.).
     counter++;
     print(counter);
+    // ignore: newline-before-return
     return Container(
       child: Center(
         child: Text('Hello'),
@@ -124,10 +128,12 @@ class _MySecondWidget extends State<MySecondWidget> {
     return context.runtimeType;
   }
 
+  // ignore: member-ordering-extended
   @override
   Widget build(BuildContext context) {
     counter++;
     print(counter);
+    // ignore: newline-before-return
     return Container(
       child: Center(
         child: Text('Hello ${testFunction()}'),
@@ -145,9 +151,10 @@ class App extends StatelessWidget {
     // Задание 4. Пункт 4.
     return MaterialApp(
       theme: ThemeData(
-          backgroundColor: Colors.blue,
-          primaryColor: Colors.red,
-          primarySwatch: Colors.pink),
+        backgroundColor: Colors.blue,
+        primaryColor: Colors.red,
+        primarySwatch: Colors.pink,
+      ),
       // Строка из title отображается как название нашего приложения в списке запущенных приложений.
       title: 'Задание 4. Пункт 4.',
       home: MyFirstWidget(),
