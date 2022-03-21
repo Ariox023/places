@@ -150,7 +150,7 @@ class App extends StatelessWidget {
           primarySwatch: Colors.pink),
       // Строка из title отображается как название нашего приложения в списке запущенных приложений.
       title: 'Задание 4. Пункт 4.',
-      home: MySecondWidget(),
+      home: MyFirstWidget(),
     );
   }
 }

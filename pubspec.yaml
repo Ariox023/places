@@ -11,8 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_svg: ^0.20.0-nullsafety.3  
-  
+  flutter_svg: ^1.0.3  
+  surf_lint_rules: ^1.5.0
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
