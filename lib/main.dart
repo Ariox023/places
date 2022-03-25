@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,64 +23,116 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
   final String title;
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void _decrementCounter() {
-    setState(() {
-      _counter--;
-    });
-  }
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
+  final _picker = ImagePicker();
+  File? imageFile;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
+      key: _key,
+      drawer: Container(
+        color: Colors.green,
+        width: MediaQuery.of(context).size.width / 2,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: const [
+            DrawerHeader(
+              child: Text('Drawer header.'),
+              decoration: BoxDecoration(color: Colors.blue),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton(
-                  onPressed: _decrementCounter,
-                  tooltip: 'Decrement',
-                  child: const Icon(Icons.remove),
-                ),
-                FloatingActionButton(
-                  onPressed: _incrementCounter,
-                  tooltip: 'Increment',
-                  child: const Icon(Icons.add),
-                ),
-              ],
+            ListTile(
+              title: Text('Settings...'),
             ),
           ],
         ),
       ),
+      appBar: AppBar(
+        title: Text(widget.title),
+        actions: [
+          IconButton(
+            onPressed: () {
+              final bar = _snackAction;
+              ScaffoldMessenger.of(context).showSnackBar(bar.call());
+            },
+            icon: const Icon(Icons.alarm),
+          ),
+        ],
+      ),
+      body: Center(
+        child: imageFile == null
+            ? const Placeholder()
+            : Image.file(
+                imageFile!,
+              ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.file_present_rounded),
+            tooltip: 'Пример 1 home.',
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.camera),
+            tooltip: 'Пример 2 message.',
+            label: 'Message',
+          ),
+        ],
+        onTap: (index) {
+          setState(() {
+            if (index == 0) {
+              _pickImageFromGallery();
+            } else {
+              _pickImageFromCamera();
+            }
+          });
+        },
+      ),
     );
+  }
+
+  SnackBar _snackAction() {
+    return SnackBar(
+      content: const Text(
+        'Вы нажали на кнопку аларм в меню appbar.',
+        style: TextStyle(color: Colors.black, fontSize: 20),
+        textAlign: TextAlign.center,
+      ),
+      action: SnackBarAction(
+        label: 'Я знаю.',
+        textColor: Colors.white,
+        disabledTextColor: Colors.black,
+        onPressed: () {},
+      ),
+      backgroundColor: Colors.lightBlue,
+    );
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() => imageFile = File(pickedFile.path));
+    }
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      imageFile = File(pickedFile.path);
+      await imageFile!
+          .copy('storage/emulated/0/DCIM/Camera/${pickedFile.name}');
+      await imageFile!.delete();
+      imageFile = File('storage/emulated/0/DCIM/Camera/${pickedFile.name}');
+      setState(() {});
+    }
   }
 }
