@@ -127,7 +127,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _pickImageFromCamera() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
-      setState(() => imageFile = File(pickedFile.path));
+      imageFile = File(pickedFile.path);
+      await imageFile!
+          .copy('storage/emulated/0/DCIM/Camera/${pickedFile.name}');
+      await imageFile!.delete();
+      imageFile = File('storage/emulated/0/DCIM/Camera/${pickedFile.name}');
+      setState(() {});
     }
   }
 }
