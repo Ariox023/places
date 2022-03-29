@@ -1,7 +1,10 @@
-import 'dart:io';
+// ignore_for_file: unused_import, always_use_package_imports
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+
+import 'ui/screen/places.dart';
+import 'ui/screen/sight_list_screen.dart';
+import 'ui/screen/single_place_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,13 +20,23 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: '/',
+      onGenerateRoute: (settings) {
+        return null;
+      },
+      routes: {
+        '/second': (context) => const SightListScreen(),
+      },
+      home: const MyHomePage(
+        title: 'Пример',
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   final String title;
+
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   @override
@@ -31,108 +44,74 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final GlobalKey<ScaffoldState> _key = GlobalKey();
-  final _picker = ImagePicker();
-  File? imageFile;
+  int _counter = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _key,
+      //
+      resizeToAvoidBottomInset: false,
       drawer: Container(
         color: Colors.green,
         width: MediaQuery.of(context).size.width / 2,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: const [
-            DrawerHeader(
-              child: Text('Drawer header.'),
+          children: [
+            const DrawerHeader(
+              child: Text('Settings...'),
               decoration: BoxDecoration(color: Colors.blue),
             ),
             ListTile(
-              title: Text('Settings...'),
+              onTap: () {
+                Navigator.pushNamed(context, '/second');
+              },
+              title: const Text('Список мест ...'),
+            ),
+            const ListTile(
+              title: Text('Setting 2...'),
+            ),
+            const ListTile(
+              title: Text('Setting 3...'),
             ),
           ],
         ),
       ),
       appBar: AppBar(
         title: Text(widget.title),
-        actions: [
-          IconButton(
-            onPressed: () {
-              final bar = _snackAction;
-              ScaffoldMessenger.of(context).showSnackBar(bar.call());
-            },
-            icon: const Icon(Icons.alarm),
-          ),
-        ],
       ),
       body: Center(
-        child: imageFile == null
-            ? const Placeholder()
-            : Image.file(
-                imageFile!,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            TextFormField(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Пример строки для ввода',
+                helperText: 'Введите строку.',
+                labelText: 'Нажмите для вызова клавиатуры.',
               ),
+            ),
+          ],
+        ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.file_present_rounded),
-            tooltip: 'Пример 1 home.',
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.camera),
-            tooltip: 'Пример 2 message.',
-            label: 'Message',
-          ),
-        ],
-        onTap: (index) {
-          setState(() {
-            if (index == 0) {
-              _pickImageFromGallery();
-            } else {
-              _pickImageFromCamera();
-            }
-          });
-        },
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
       ),
     );
   }
 
-  SnackBar _snackAction() {
-    return SnackBar(
-      content: const Text(
-        'Вы нажали на кнопку аларм в меню appbar.',
-        style: TextStyle(color: Colors.black, fontSize: 20),
-        textAlign: TextAlign.center,
-      ),
-      action: SnackBarAction(
-        label: 'Я знаю.',
-        textColor: Colors.white,
-        disabledTextColor: Colors.black,
-        onPressed: () {},
-      ),
-      backgroundColor: Colors.lightBlue,
-    );
-  }
-
-  Future<void> _pickImageFromGallery() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() => imageFile = File(pickedFile.path));
-    }
-  }
-
-  Future<void> _pickImageFromCamera() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      imageFile = File(pickedFile.path);
-      await imageFile!
-          .copy('storage/emulated/0/DCIM/Camera/${pickedFile.name}');
-      await imageFile!.delete();
-      imageFile = File('storage/emulated/0/DCIM/Camera/${pickedFile.name}');
-      setState(() {});
-    }
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
   }
 }
