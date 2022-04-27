@@ -1,27 +1,32 @@
-// ignore_for_file: always_use_package_imports, no_logic_in_create_state
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'places.dart';
-import 'single_place_screen.dart';
+import 'package:places/res/assets/app_strings.dart';
+import 'package:places/res/assets/settings.dart';
+import 'package:places/ui/screen/places.dart';
+import 'package:places/ui/screen/selected_places.dart';
+import 'package:places/ui/screen/single_place_screen.dart';
 
 class SightListScreen extends StatefulWidget {
-  final List<InterestingPlace>? items;
-
-  const SightListScreen({Key? key, this.items}) : super(key: key);
+  const SightListScreen({Key? key}) : super(key: key);
 
   @override
-  State<SightListScreen> createState() {
-    return _SightListScreenState(items);
-  }
+  State<SightListScreen> createState() => _SightListScreenState();
 }
 
 class _SightListScreenState extends State<SightListScreen> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
-  late final List<InterestingPlace> _items;
+  late List<InterestingPlace> _items = [];
 
-  _SightListScreenState(List<InterestingPlace>? items) {
-    _items = items ?? completeListOfInterestigPlaces();
+  @override
+  void initState() {
+    super.initState();
+    _initializeListOfInterestingPlaces();
+  }
+
+  @override
+  void didUpdateWidget(covariant SightListScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _initializeListOfInterestingPlaces();
   }
 
   @override
@@ -36,41 +41,51 @@ class _SightListScreenState extends State<SightListScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const DrawerHeader(
-              child: Text('Settings...'),
-              decoration: BoxDecoration(color: Colors.blue),
+            DrawerHeader(
+              child: Text(AppStrings.mapOfStrings[
+                      'appMainDrawnerHeader${SettingsApp.lang}'] ??
+                  ''),
+              decoration: const BoxDecoration(color: Colors.blue),
             ),
             ListTile(
               onTap: () {
+                completeJSONFromListOfInterestigPlaces(_items);
                 Navigator.pushNamed(context, '/');
               },
-              title: const Text('Основной экран'),
+              title: Text(AppStrings.mapOfStrings[
+                      'appSinglePlaceScreenDrawner2${SettingsApp.lang}'] ??
+                  ''),
             ),
             ListTile(
               onTap: () {
-                final selectedPlaces = <InterestingPlace>[];
-                for (final element in _items) {
-                  if (element.selected) {
-                    selectedPlaces.add(element);
-                  }
-                }
+                // final selectedPlaces = <InterestingPlace>[];
+                // for (final element in _items) {
+                //   if (element.selected) {
+                //     selectedPlaces.add(element);
+                //   }
+                // }
                 Navigator.of(context).push<void>(
                   MaterialPageRoute(
-                    builder: (context) =>
-                        SightListScreen(items: selectedPlaces),
+                    builder: (context) => SelsectedPlaces(items: _items),
                   ),
                 );
               },
-              title: const Text('Выбранные места'),
+              title: Text(AppStrings.mapOfStrings[
+                      'appSingleListScreenDrawner2${SettingsApp.lang}'] ??
+                  ''),
             ),
-            const ListTile(
-              title: Text('Setting 3...'),
+            ListTile(
+              title: Text(AppStrings.mapOfStrings[
+                      'appMainDrawnerSetting3${SettingsApp.lang}'] ??
+                  ''),
             ),
           ],
         ),
       ),
       appBar: AppBar(
-        title: const Text('Список интересных мест'),
+        title: Text(AppStrings.mapOfStrings[
+                'appSingleListScreenAppBarTitle${SettingsApp.lang}'] ??
+            ''),
       ),
       body: ReorderableListView(
         children: <Widget>[
@@ -110,7 +125,12 @@ class _SightListScreenState extends State<SightListScreen> {
                                       : Colors.transparent,
                                 ),
                                 CarouselSlider(
-                                  items: item.images,
+                                  items: item.images
+                                      .split(';')
+                                      .map(
+                                        Image.network,
+                                      )
+                                      .toList(),
                                   options: CarouselOptions(
                                     enlargeCenterPage: true,
                                   ),
@@ -142,7 +162,9 @@ class _SightListScreenState extends State<SightListScreen> {
                               });
                             },
                             child: Text(
-                              'Хочу посетить',
+                              AppStrings.mapOfStrings[
+                                      'appSingleListScreenLikeButton${SettingsApp.lang}'] ??
+                                  '',
                               semanticsLabel: item.name,
                             ),
                           ),
@@ -159,14 +181,21 @@ class _SightListScreenState extends State<SightListScreen> {
     );
   }
 
+  Future<void> _initializeListOfInterestingPlaces() async {
+    final listFuture = await completeListOfInterestigPlaces();
+    setState(() {
+      _items = listFuture;
+    });
+  }
+
   void _onReorder(int oldIndex, int newIndex) {
     setState(() {
+      var ind = newIndex;
       if (newIndex > oldIndex) {
-        // ignore: parameter_assignments
-        newIndex -= 1;
+        ind = newIndex - 1;
       }
       final itemX = _items.removeAt(oldIndex);
-      _items.insert(newIndex, itemX);
+      _items.insert(ind, itemX);
     });
   }
 }

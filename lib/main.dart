@@ -1,10 +1,7 @@
-// ignore_for_file: unused_import, always_use_package_imports
-
 import 'package:flutter/material.dart';
-
-import 'ui/screen/places.dart';
-import 'ui/screen/sight_list_screen.dart';
-import 'ui/screen/single_place_screen.dart';
+import 'package:places/res/assets/app_strings.dart';
+import 'package:places/res/assets/settings.dart';
+import 'package:places/ui/screen/sight_list_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,19 +13,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: AppStrings.mapOfStrings['appName${SettingsApp.lang}'] ?? '',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       initialRoute: '/',
-      onGenerateRoute: (settings) {
-        return null;
-      },
       routes: {
         '/second': (context) => const SightListScreen(),
       },
-      home: const MyHomePage(
-        title: 'Пример',
+      home: MyHomePage(
+        title: AppStrings.mapOfStrings['appTitle${SettingsApp.lang}'] ?? '',
       ),
     );
   }
@@ -49,7 +43,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //
       resizeToAvoidBottomInset: false,
       drawer: Container(
         color: Colors.green,
@@ -57,21 +50,29 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const DrawerHeader(
-              child: Text('Settings...'),
-              decoration: BoxDecoration(color: Colors.blue),
+            DrawerHeader(
+              child: Text(AppStrings.mapOfStrings[
+                      'appMainDrawnerHeader${SettingsApp.lang}'] ??
+                  ''),
+              decoration: const BoxDecoration(color: Colors.blue),
             ),
             ListTile(
               onTap: () {
                 Navigator.pushNamed(context, '/second');
               },
-              title: const Text('Список мест ...'),
+              title: Text(AppStrings.mapOfStrings[
+                      'appMainDrawnerSetting1${SettingsApp.lang}'] ??
+                  ''),
             ),
-            const ListTile(
-              title: Text('Setting 2...'),
+            ListTile(
+              title: Text(AppStrings.mapOfStrings[
+                      'appMainDrawnerSetting2${SettingsApp.lang}'] ??
+                  ''),
             ),
-            const ListTile(
-              title: Text('Setting 3...'),
+            ListTile(
+              title: Text(AppStrings.mapOfStrings[
+                      'appMainDrawnerSetting3${SettingsApp.lang}'] ??
+                  ''),
             ),
           ],
         ),
@@ -83,19 +84,25 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
+            Text(AppStrings.mapOfStrings[
+                    'appMainColumnFirstElement${SettingsApp.lang}'] ??
+                ''),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
             TextFormField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Пример строки для ввода',
-                helperText: 'Введите строку.',
-                labelText: 'Нажмите для вызова клавиатуры.',
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: AppStrings.mapOfStrings[
+                        'appMainFirstTextFormFieldhint${SettingsApp.lang}'] ??
+                    '',
+                helperText: AppStrings.mapOfStrings[
+                        'appMainFirstTextFormFieldhelper${SettingsApp.lang}'] ??
+                    '',
+                labelText: AppStrings.mapOfStrings[
+                        'appMainFirstTextFormFieldlabel${SettingsApp.lang}'] ??
+                    '',
               ),
             ),
           ],
@@ -103,7 +110,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        tooltip: AppStrings.mapOfStrings[
+                'appMainNameOfFloatingActionButton${SettingsApp.lang}'] ??
+            '',
         child: const Icon(Icons.add),
       ),
     );

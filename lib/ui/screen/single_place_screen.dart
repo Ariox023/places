@@ -1,8 +1,8 @@
-// ignore_for_file: always_use_package_imports
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'places.dart';
+import 'package:places/res/assets/app_strings.dart';
+import 'package:places/res/assets/settings.dart';
+import 'package:places/ui/screen/places.dart';
 
 class SightPlaceScreen extends StatelessWidget {
   final InterestingPlace place;
@@ -20,30 +20,40 @@ class SightPlaceScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const DrawerHeader(
-              child: Text('Settings...'),
-              decoration: BoxDecoration(color: Colors.blue),
+            DrawerHeader(
+              child: Text(AppStrings.mapOfStrings[
+                      'appMainDrawnerHeader${SettingsApp.lang}'] ??
+                  ''),
+              decoration: const BoxDecoration(color: Colors.blue),
             ),
             ListTile(
               onTap: () {
                 Navigator.pushNamed(context, '/second');
               },
-              title: const Text('Список мест ...'),
+              title: Text(AppStrings.mapOfStrings[
+                      'appMainDrawnerSetting1${SettingsApp.lang}'] ??
+                  ''),
             ),
             ListTile(
               onTap: () {
                 Navigator.pushNamed(context, '/');
               },
-              title: const Text('Основной экран ...'),
+              title: Text(AppStrings.mapOfStrings[
+                      'appSinglePlaceScreenDrawner2${SettingsApp.lang}'] ??
+                  ''),
             ),
-            const ListTile(
-              title: Text('Setting 3...'),
+            ListTile(
+              title: Text(AppStrings.mapOfStrings[
+                      'appMainDrawnerSetting3${SettingsApp.lang}'] ??
+                  ''),
             ),
           ],
         ),
       ),
       appBar: AppBar(
-        title: const Text('Детальное описание'),
+        title: Text(AppStrings.mapOfStrings[
+                'appSinglePlaceScreenAppBarTitle${SettingsApp.lang}'] ??
+            ''),
       ),
       body: Column(
         children: [
@@ -63,10 +73,14 @@ class SightPlaceScreen extends StatelessWidget {
               heightFactor: 1,
               widthFactor: 1,
               child: CarouselSlider(
-                items: place.images,
+                items: place.images
+                    .split(';')
+                    .map(
+                      Image.network,
+                    )
+                    .toList(),
                 options: CarouselOptions(
                   scrollDirection: Axis.vertical,
-                  // height: ,
                   enlargeCenterPage: true,
                 ),
               ),
