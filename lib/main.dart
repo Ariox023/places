@@ -1,7 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:places/res/assets/app_strings.dart';
+import 'package:places/res/assets/settings.dart';
+import 'package:places/ui/screen/sight_list_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,17 +13,24 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: AppStrings.mapOfStrings['appName${SettingsApp.lang}'] ?? '',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: '/',
+      routes: {
+        '/second': (context) => const SightListScreen(),
+      },
+      home: MyHomePage(
+        title: AppStrings.mapOfStrings['appTitle${SettingsApp.lang}'] ?? '',
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   final String title;
+
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   @override
@@ -31,108 +38,89 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final GlobalKey<ScaffoldState> _key = GlobalKey();
-  final _picker = ImagePicker();
-  File? imageFile;
+  int _counter = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _key,
+      resizeToAvoidBottomInset: false,
       drawer: Container(
         color: Colors.green,
         width: MediaQuery.of(context).size.width / 2,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: const [
+          children: [
             DrawerHeader(
-              child: Text('Drawer header.'),
-              decoration: BoxDecoration(color: Colors.blue),
+              child: Text(AppStrings.mapOfStrings[
+                      'appMainDrawnerHeader${SettingsApp.lang}'] ??
+                  ''),
+              decoration: const BoxDecoration(color: Colors.blue),
             ),
             ListTile(
-              title: Text('Settings...'),
+              onTap: () {
+                Navigator.pushNamed(context, '/second');
+              },
+              title: Text(AppStrings.mapOfStrings[
+                      'appMainDrawnerSetting1${SettingsApp.lang}'] ??
+                  ''),
+            ),
+            ListTile(
+              title: Text(AppStrings.mapOfStrings[
+                      'appMainDrawnerSetting2${SettingsApp.lang}'] ??
+                  ''),
+            ),
+            ListTile(
+              title: Text(AppStrings.mapOfStrings[
+                      'appMainDrawnerSetting3${SettingsApp.lang}'] ??
+                  ''),
             ),
           ],
         ),
       ),
       appBar: AppBar(
         title: Text(widget.title),
-        actions: [
-          IconButton(
-            onPressed: () {
-              final bar = _snackAction;
-              ScaffoldMessenger.of(context).showSnackBar(bar.call());
-            },
-            icon: const Icon(Icons.alarm),
-          ),
-        ],
       ),
       body: Center(
-        child: imageFile == null
-            ? const Placeholder()
-            : Image.file(
-                imageFile!,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(AppStrings.mapOfStrings[
+                    'appMainColumnFirstElement${SettingsApp.lang}'] ??
+                ''),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            TextFormField(
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: AppStrings.mapOfStrings[
+                        'appMainFirstTextFormFieldhint${SettingsApp.lang}'] ??
+                    '',
+                helperText: AppStrings.mapOfStrings[
+                        'appMainFirstTextFormFieldhelper${SettingsApp.lang}'] ??
+                    '',
+                labelText: AppStrings.mapOfStrings[
+                        'appMainFirstTextFormFieldlabel${SettingsApp.lang}'] ??
+                    '',
               ),
+            ),
+          ],
+        ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.file_present_rounded),
-            tooltip: 'Пример 1 home.',
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.camera),
-            tooltip: 'Пример 2 message.',
-            label: 'Message',
-          ),
-        ],
-        onTap: (index) {
-          setState(() {
-            if (index == 0) {
-              _pickImageFromGallery();
-            } else {
-              _pickImageFromCamera();
-            }
-          });
-        },
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: AppStrings.mapOfStrings[
+                'appMainNameOfFloatingActionButton${SettingsApp.lang}'] ??
+            '',
+        child: const Icon(Icons.add),
       ),
     );
   }
 
-  SnackBar _snackAction() {
-    return SnackBar(
-      content: const Text(
-        'Вы нажали на кнопку аларм в меню appbar.',
-        style: TextStyle(color: Colors.black, fontSize: 20),
-        textAlign: TextAlign.center,
-      ),
-      action: SnackBarAction(
-        label: 'Я знаю.',
-        textColor: Colors.white,
-        disabledTextColor: Colors.black,
-        onPressed: () {},
-      ),
-      backgroundColor: Colors.lightBlue,
-    );
-  }
-
-  Future<void> _pickImageFromGallery() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() => imageFile = File(pickedFile.path));
-    }
-  }
-
-  Future<void> _pickImageFromCamera() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      imageFile = File(pickedFile.path);
-      await imageFile!
-          .copy('storage/emulated/0/DCIM/Camera/${pickedFile.name}');
-      await imageFile!.delete();
-      imageFile = File('storage/emulated/0/DCIM/Camera/${pickedFile.name}');
-      setState(() {});
-    }
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
   }
 }
