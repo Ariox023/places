@@ -88,7 +88,6 @@ class _SightListScreenState extends State<SightListScreen> {
         ),
         backgroundColor: Colors.white,
         appBar: AppBar(
-          actionsIconTheme: const IconThemeData(color: Colors.blue),
           backgroundColor: Colors.transparent,
           toolbarHeight: 152,
           centerTitle: false,
